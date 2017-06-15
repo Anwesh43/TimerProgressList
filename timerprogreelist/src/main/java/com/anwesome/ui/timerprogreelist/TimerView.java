@@ -3,6 +3,7 @@ package com.anwesome.ui.timerprogreelist;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Created by anweshmishra on 16/06/17.
@@ -89,5 +91,9 @@ public class TimerView extends View {
         public void start() {
             startAnim.start();
         }
+    }
+    public static void create(Activity activity,int timeLimit,int size) {
+        TimerView timerView = new TimerView(activity,timeLimit);
+        activity.addContentView(timerView,new ViewGroup.LayoutParams(size,size/2));
     }
 }
