@@ -50,7 +50,6 @@ public class TimerView extends View {
         private float deg = 0;
         public void draw(Canvas canvas,float r) {
             paint.setStrokeWidth(r/25);
-            paint.setColor(Color.parseColor("#0288D1"));
             canvas.save();
             canvas.translate(w/2,h/2);
             Path path = new Path();
@@ -62,11 +61,15 @@ public class TimerView extends View {
                 else {
                     path.lineTo(x,y);
                 }
-                if(i == deg && deg!=360) {
+                if(Math.floor(deg) == i && deg!=360) {
+                    paint.setColor(Color.parseColor("#0288D1"));
                     paint.setStyle(Paint.Style.FILL);
-                    canvas.drawCircle(x,y,r/15,paint);
+                    canvas.drawCircle(x,y,r/7,paint);
+                    paint.setColor(Color.WHITE);
+                    canvas.drawCircle(x,y,r/12,paint);
                 }
             }
+            paint.setColor(Color.parseColor("#0288D1"));
             paint.setStyle(Paint.Style.STROKE);
             canvas.drawPath(path,paint);
             canvas.restore();
