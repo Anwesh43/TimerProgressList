@@ -1,5 +1,8 @@
 package com.anwesome.ui.timerprogreelist;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,6 +18,7 @@ import android.view.View;
 public class TimerView extends View {
     private int timeLimit,time = 0,w,h;
     private Timer timer;
+    private AnimationHandler animationHandler;
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     public TimerView(Context context,int timeLimit) {
         super(context);
@@ -25,9 +29,13 @@ public class TimerView extends View {
             w = canvas.getWidth();
             h = canvas.getHeight();
             timer = new Timer();
+            animationHandler = new AnimationHandler();
         }
         canvas.drawColor(Color.parseColor("#1A237E"));
         timer.draw(canvas,Math.max(w,h)/6);
+        if(time == 0) {
+            animationHandler.start();
+        }
         time++;
     }
     public void update(float factor) {
@@ -35,12 +43,6 @@ public class TimerView extends View {
             timer.update(factor);
         }
         postInvalidate();
-    }
-    public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            
-        }
-        return true;
     }
     private class Timer {
         private float deg = 0;
@@ -69,6 +71,23 @@ public class TimerView extends View {
         }
         public void update(float factor) {
             deg = 360*factor;
+        }
+    }
+    private class AnimationHandler extends AnimatorListenerAdapter implements ValueAnimator.AnimatorUpdateListener {
+        private ValueAnimator startAnim = ValueAnimator.ofFloat(0,1);
+        public AnimationHandler() {
+            startAnim.setDuration(timeLimit);
+            startAnim.addUpdateListener(this);
+            startAnim.addListener(this);
+        }
+        public void onAnimationUpdate(ValueAnimator valueAnimator) {
+            update((float)valueAnimator.getAnimatedValue());
+        }
+        public void onAnimationEnd(Animator animator) {
+
+        }
+        public void start() {
+            startAnim.start();
         }
     }
 }
