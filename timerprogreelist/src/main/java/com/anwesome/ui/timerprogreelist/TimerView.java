@@ -13,6 +13,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 /**
  * Created by anweshmishra on 16/06/17.
  */
@@ -39,10 +42,12 @@ public class TimerView extends View {
         }
         canvas.drawColor(Color.parseColor("#1A237E"));
         timer.draw(canvas,Math.max(w,h)/6);
-        if(time == 0) {
+        time++;
+    }
+    public void start() {
+        if(animationHandler != null) {
             animationHandler.start();
         }
-        time++;
     }
     public void update(float factor) {
         if(timer != null) {

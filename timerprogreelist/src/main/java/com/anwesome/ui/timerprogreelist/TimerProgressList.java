@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by anweshmishra on 16/06/17.
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class TimerProgressList {
     private Activity activity;
+    private TimerHandler timerHandler;
     private RelativeLayout mainContainer;
     private ScrollView scrollView;
     private TimerList timerList;
@@ -31,7 +33,7 @@ public class TimerProgressList {
         initDimension(activity);
         this.timerList = new TimerList(activity);
         this.scrollView.addView(timerList,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
+        this.timerHandler = new TimerHandler();
     }
     public void initDimension(Context context) {
         DisplayManager displayManager = (DisplayManager)context.getSystemService(Context.DISPLAY_SERVICE);
@@ -56,6 +58,7 @@ public class TimerProgressList {
             mainContainer.addView(scrollView,new ViewGroup.LayoutParams(w,9*h/10));
             scrollView.setY(h/12);
             isShown = true;
+            timerHandler.start();
         }
     }
     private class TimerList extends ViewGroup{
@@ -82,7 +85,39 @@ public class TimerProgressList {
         public void addTimer(int duration) {
             TimerView timerView = new TimerView(getContext(),duration);
             addView(timerView,new LayoutParams(w,w/2));
+            if(timerHandler != null) {
+                timerHandler.addTimer(timerView);
+            }
             requestLayout();
         }
      }
+    private class TimerHandler {
+        private int count = 0;
+        private ConcurrentLinkedQueue<TimerView> timers = new ConcurrentLinkedQueue<>();
+        private TimerView currTimer;
+        public void start() {
+            if(currTimer != null) {
+                currTimer.start();
+            }
+        }
+        public void addTimer(TimerView timerView) {
+            if(currTimer == null) {
+                currTimer = timerView;
+            }
+            timerView.setOnAnimationEndListener(new TimerView.OnAnimationEndListener() {
+                @Override
+                public void onAnimationEnd() {
+                    if(currTimer != null) {
+                        progressView.updateCompletedTimer();
+                        timers.remove(currTimer);
+                        for(TimerView timer:timers) {
+                            currTimer = timer;
+                            break;
+                        }
+                        start();
+                    }
+                }
+            });
+        }
+    }
 }
