@@ -19,6 +19,15 @@ import android.view.ViewGroup;
 public class TimerView extends View {
     private int timeLimit,time = 0,w,h;
     private Timer timer;
+    private OnTimerCompletionListener onTimerCompletionListener;
+    public void setOnTimerCompletionListener(OnTimerCompletionListener onTimerCompletionListener) {
+        this.onTimerCompletionListener = onTimerCompletionListener;
+    }
+    public void handleCompletion() {
+        if(onTimerCompletionListener != null) {
+            onTimerCompletionListener.onTimerCompletion();
+        }
+    }
     private boolean shouldStart = false;
     private AnimationHandler animationHandler;
     private OnAnimationEndListener onAnimationEndListener;

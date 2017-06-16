@@ -46,9 +46,9 @@ public class TimerProgressList {
         w = size.x;
         h = size.y;
     }
-    public void addTimer(int duration) {
+    public void addTimer(int duration,OnTimerCompletionListener onTimerCompletionListener) {
         if(!isShown) {
-            timerList.addTimer(duration);
+            timerList.addTimer(duration,onTimerCompletionListener);
             n++;
         }
     }
@@ -86,8 +86,9 @@ public class TimerProgressList {
                 y += (child.getMeasuredHeight()+h/30);
             }
         }
-        public void addTimer(int duration) {
+        public void addTimer(int duration,OnTimerCompletionListener onTimerCompletionListener) {
             TimerView timerView = new TimerView(getContext(),duration);
+            timerView.setOnTimerCompletionListener(onTimerCompletionListener);
             addView(timerView,new LayoutParams(9*w/10,9*w/20));
             if(timerHandler != null) {
                 timerHandler.addTimer(timerView);
@@ -124,6 +125,7 @@ public class TimerProgressList {
                     if(currTimer != null) {
                         progressView.updateCompletedTimer();
                         timers.remove(currTimer);
+                        currTimer.handleCompletion();
                         currTimer = getFirstTimer();
                         if(scrollAnimationHandler!=null) {
                             scrollAnimationHandler.start();
@@ -136,7 +138,7 @@ public class TimerProgressList {
             private ValueAnimator animator;
             private int y = 0;
             public ScrollAnimationHandler() {
-                animator = ValueAnimator.ofInt(0,w/2);
+                animator = ValueAnimator.ofInt(0,w/2+h/30);
                 animator.setDuration(500);
                 animator.addUpdateListener(this);
                 animator.addListener(this);
