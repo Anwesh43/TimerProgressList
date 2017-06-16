@@ -81,7 +81,6 @@ public class TimerProgressList {
         }
         public void addTimer(int duration) {
             TimerView timerView = new TimerView(getContext(),duration);
-            timerView.setProgressView(progressView);
             addView(timerView,new LayoutParams(w,w/2));
             requestLayout();
         }

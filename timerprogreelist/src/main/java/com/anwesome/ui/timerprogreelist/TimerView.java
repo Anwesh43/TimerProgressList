@@ -21,11 +21,11 @@ public class TimerView extends View {
     private int timeLimit,time = 0,w,h;
     private Timer timer;
     private AnimationHandler animationHandler;
-    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private ProgressView progressView;
-    public void setProgressView(ProgressView progressView) {
-        this.progressView = progressView;
+    private OnAnimationEndListener onAnimationEndListener;
+    public void setOnAnimationEndListener(OnAnimationEndListener onAnimationEndListener) {
+        this.onAnimationEndListener = onAnimationEndListener;
     }
+    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     public TimerView(Context context,int timeLimit) {
         super(context);
         this.timeLimit = timeLimit;
@@ -93,7 +93,9 @@ public class TimerView extends View {
             update((float)valueAnimator.getAnimatedValue());
         }
         public void onAnimationEnd(Animator animator) {
-
+            if(onAnimationEndListener != null) {
+                onAnimationEndListener.onAnimationEnd();
+            }
         }
         public void start() {
             startAnim.start();
@@ -102,5 +104,8 @@ public class TimerView extends View {
     public static void create(Activity activity,int timeLimit,int size) {
         TimerView timerView = new TimerView(activity,timeLimit);
         activity.addContentView(timerView,new ViewGroup.LayoutParams(size,size/2));
+    }
+    public interface OnAnimationEndListener {
+        void onAnimationEnd();
     }
 }
