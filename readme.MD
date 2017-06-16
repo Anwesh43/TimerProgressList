@@ -25,3 +25,7 @@
 ```
     timerProgressList.show();
 ```
+
+### Demo
+
+<img src="https://github.com/Anwesh43/TimerProgressList/blob/master/demo/timerlist.gif" width="300px" height="500px">
