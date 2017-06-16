@@ -5,11 +5,15 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
@@ -46,6 +50,24 @@ public class TimerProgressList {
         w = size.x;
         h = size.y;
     }
+    private void hideActionBar() {
+        if(activity instanceof AppCompatActivity) {
+            ActionBar actionBar = ((AppCompatActivity)activity).getSupportActionBar();
+            if(actionBar != null) {
+                actionBar.hide();
+            }
+        }
+        else {
+            android.app.ActionBar actionBar = activity.getActionBar();
+            if(actionBar != null) {
+                actionBar.hide();
+            }
+        }
+    }
+    private void adjustScreen() {
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
     public void addTimer(int duration,OnTimerCompletionListener onTimerCompletionListener) {
         if(!isShown) {
             timerList.addTimer(duration,onTimerCompletionListener);
@@ -54,6 +76,8 @@ public class TimerProgressList {
     }
     public void show() {
         if(!isShown) {
+            hideActionBar();
+            adjustScreen();
             progressView = new ProgressView(activity,n);
             mainContainer.addView(progressView,new ViewGroup.LayoutParams(w,h/30));
             progressView.setX(0);
