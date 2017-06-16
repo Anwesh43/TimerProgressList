@@ -1,5 +1,8 @@
 package com.anwesome.ui.timerprogreelist;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
@@ -73,7 +76,7 @@ public class TimerProgressList {
                 measureChild(child,wspec,hspec);
                 hMax += (child.getMeasuredHeight()+h/30);
             }
-            setMeasuredDimension(w,hMax);
+            setMeasuredDimension(w,hMax+h/15);
         }
         public void onLayout(boolean reloaded,int a,int b,int wa,int has){
             int x = w/20,y = h/30;
@@ -93,8 +96,12 @@ public class TimerProgressList {
         }
      }
     private class TimerHandler {
+        private ScrollAnimationHandler scrollAnimationHandler;
         private ConcurrentLinkedQueue<TimerView> timers = new ConcurrentLinkedQueue<>();
         private TimerView currTimer;
+        public TimerHandler() {
+            scrollAnimationHandler = new ScrollAnimationHandler();
+        }
         public void start() {
             if(currTimer != null) {
                 currTimer.start();
@@ -118,10 +125,34 @@ public class TimerProgressList {
                         progressView.updateCompletedTimer();
                         timers.remove(currTimer);
                         currTimer = getFirstTimer();
-                        start();
+                        if(scrollAnimationHandler!=null) {
+                            scrollAnimationHandler.start();
+                        }
                     }
                 }
             });
+        }
+        private class ScrollAnimationHandler extends AnimatorListenerAdapter implements ValueAnimator.AnimatorUpdateListener {
+            private ValueAnimator animator;
+            private int y = 0;
+            public ScrollAnimationHandler() {
+                animator = ValueAnimator.ofInt(0,w/2);
+                animator.setDuration(500);
+                animator.addUpdateListener(this);
+                animator.addListener(this);
+            }
+            public void onAnimationEnd(Animator animator) {
+                if(timerHandler != null) {
+                    timerHandler.start();
+                }
+            }
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                scrollView.scrollTo(0,y+(int)valueAnimator.getAnimatedValue());
+            }
+            public void start() {
+                y = scrollView.getScrollY();
+                animator.start();
+            }
         }
     }
 }
