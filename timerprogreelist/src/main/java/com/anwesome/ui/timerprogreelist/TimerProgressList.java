@@ -57,6 +57,7 @@ public class TimerProgressList {
             progressView.setY(h/30);
             mainContainer.addView(scrollView,new ViewGroup.LayoutParams(w,9*h/10));
             scrollView.setY(h/12);
+            activity.setContentView(mainContainer);
             isShown = true;
             timerHandler.start();
         }
@@ -84,7 +85,7 @@ public class TimerProgressList {
         }
         public void addTimer(int duration) {
             TimerView timerView = new TimerView(getContext(),duration);
-            addView(timerView,new LayoutParams(w,w/2));
+            addView(timerView,new LayoutParams(9*w/10,9*w/20));
             if(timerHandler != null) {
                 timerHandler.addTimer(timerView);
             }
@@ -92,7 +93,6 @@ public class TimerProgressList {
         }
      }
     private class TimerHandler {
-        private int count = 0;
         private ConcurrentLinkedQueue<TimerView> timers = new ConcurrentLinkedQueue<>();
         private TimerView currTimer;
         public void start() {
@@ -100,20 +100,24 @@ public class TimerProgressList {
                 currTimer.start();
             }
         }
+        public TimerView getFirstTimer() {
+            for(TimerView timer:timers) {
+                return timer;
+            }
+            return null;
+        }
         public void addTimer(TimerView timerView) {
             if(currTimer == null) {
                 currTimer = timerView;
             }
+            timers.add(timerView);
             timerView.setOnAnimationEndListener(new TimerView.OnAnimationEndListener() {
                 @Override
                 public void onAnimationEnd() {
                     if(currTimer != null) {
                         progressView.updateCompletedTimer();
                         timers.remove(currTimer);
-                        for(TimerView timer:timers) {
-                            currTimer = timer;
-                            break;
-                        }
+                        currTimer = getFirstTimer();
                         start();
                     }
                 }

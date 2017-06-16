@@ -24,7 +24,7 @@ public class ProgressView extends View{
         paint.setStrokeCap(Paint.Cap.ROUND);
         canvas.drawLine(w/20,h/2,w-w/20,h/2,paint);
         paint.setColor(Color.GREEN);
-        canvas.drawLine(w/20,h/2,w/20+(9*w/10)*((completedTimer)/maxTimer),h/2,paint);
+        canvas.drawLine(w/20,h/2,w/20+(9*w/10)*((completedTimer*1.0f)/maxTimer),h/2,paint);
     }
     public void updateCompletedTimer() {
         if(completedTimer < maxTimer) {

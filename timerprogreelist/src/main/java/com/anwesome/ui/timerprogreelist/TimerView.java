@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class TimerView extends View {
     private int timeLimit,time = 0,w,h;
     private Timer timer;
+    private boolean shouldStart = false;
     private AnimationHandler animationHandler;
     private OnAnimationEndListener onAnimationEndListener;
     public void setOnAnimationEndListener(OnAnimationEndListener onAnimationEndListener) {
@@ -39,6 +40,9 @@ public class TimerView extends View {
             h = canvas.getHeight();
             timer = new Timer();
             animationHandler = new AnimationHandler();
+            if(shouldStart) {
+                start();
+            }
         }
         canvas.drawColor(Color.parseColor("#1A237E"));
         timer.draw(canvas,Math.max(w,h)/6);
@@ -47,6 +51,9 @@ public class TimerView extends View {
     public void start() {
         if(animationHandler != null) {
             animationHandler.start();
+        }
+        else {
+            shouldStart = true;
         }
     }
     public void update(float factor) {
