@@ -22,6 +22,10 @@ public class TimerView extends View {
     private Timer timer;
     private AnimationHandler animationHandler;
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private ProgressView progressView;
+    public void setProgressView(ProgressView progressView) {
+        this.progressView = progressView;
+    }
     public TimerView(Context context,int timeLimit) {
         super(context);
         this.timeLimit = timeLimit;
